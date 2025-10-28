@@ -39,6 +39,65 @@
 
       <!-- 内容面板 -->
       <main class="content-area">
+        <!-- TradingView Widget BEGIN -->
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <div class="tradingview-widget-copyright">
+            <a
+              href="https://cn.tradingview.com/markets/"
+              rel="noopener nofollow"
+              target="_blank"
+              ><span class="blue-text"
+                >Track all markets on TradingView</span
+              ></a
+            >
+          </div>
+          <script
+            type="text/javascript"
+            src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js"
+            async
+          >
+              {
+              "symbols": [
+                {
+                  "proName": "FX:USDCNH",
+                  "title": "USD to CNH"
+                },
+                {
+                  "proName": "NASDAQ:QQQ",
+                  "title": "NASDAQ 100"
+                },
+                {
+                  "proName": "AMEX:VOO",
+                  "title": "S&P500"
+                },
+                {
+                  "proName": "THINKMARKETS:USDINDEX",
+                  "title": "USD INDEX"
+                },
+                {
+                  "proName": "INDEX:S5TH",
+                  "title": "S&P 200 AVG+"
+                },
+                {
+                  "proName": "INDEX:S5FI",
+                  "title": "S&P 50 AVG+"
+                },
+                {
+                  "proName": "INDEX:S5TW",
+                  "title": "S&P 20 AVG+"
+                }
+              ],
+              "colorTheme": "dark",
+              "locale": "zh_CN",
+              "largeChartUrl": "",
+              "isTransparent": true,
+              "showSymbolLogo": true,
+              "displayMode": "regular"
+            }
+          </script>
+        </div>
+        <!-- TradingView Widget END -->
         <!-- 资产概览面板 -->
         <div id="summary-panel" class="tab-panel active">
           <div id="summary-container">
@@ -73,6 +132,48 @@
               </div>
             </div>
           </div>
+
+          <!-- ========== 新增：TradingView 财经日历 ========== -->
+          <div
+            class="pie-chart-container economic-calendar-container"
+            style="animation: fadeInUp 0.6s 1s ease-out backwards"
+          >
+            <h3 class="chart-title">重要财经日历</h3>
+            <div style="height: 500px">
+              <!-- TradingView Widget BEGIN -->
+              <!-- TradingView Widget BEGIN -->
+              <div class="tradingview-widget-container">
+                <div class="tradingview-widget-container__widget"></div>
+                <div class="tradingview-widget-copyright">
+                  <a
+                    href="https://tw.tradingview.com/economic-calendar/"
+                    rel="noopener nofollow"
+                    target="_blank"
+                    ><span class="blue-text"
+                      >Track all markets on TradingView</span
+                    ></a
+                  >
+                </div>
+                <script
+                  type="text/javascript"
+                  src="https://s3.tradingview.com/external-embedding/embed-widget-events.js"
+                  async
+                >
+                    {
+                    "colorTheme": "dark",
+                    "isTransparent": true,
+                    "locale": "zh_TW",
+                    "countryFilter": "us",
+                    "importanceFilter": "0,1",
+                    "width": "100%",
+                    "height": "100%"
+                  }
+                </script>
+              </div>
+              <!-- TradingView Widget END -->
+            </div>
+          </div>
+          <!-- ========== 新增内容结束 ========== -->
 
           <!-- ========== 新增：恐慌贪婪指数图表容器 ========== -->
           <div class="fear-greed-wrapper-container">
