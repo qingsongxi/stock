@@ -74,6 +74,9 @@ jobs:
           
           echo "=== Running CNN_fear_greed_index.py ==="
           python scripts/CNN_fear_greed_index.py
+          
+          echo "=== Running fed_data.py ==="
+          python scripts/fed_data.py
 
       # 第5步：将新生成或更新的文件提交回您的代码仓库
       - name: Commit updated data files
@@ -82,7 +85,7 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           
           # <<< 修改: git add 命令指向 data/ 目录下的文件 >>>
-          git add data/portfolio_details_history.csv data/portfolio_value_chart.png data/portfolio_pie_chart.png data/portfolio_return.json data/portfolio_assets_returns.json data/fear_greed_index.json
+          git add data/portfolio_details_history.csv data/portfolio_value_chart.png data/portfolio_pie_chart.png data/portfolio_return.json data/portfolio_assets_returns.json data/fear_greed_index.json data/economic_indicators_5y.json
           
           # 检查是否有文件被修改，如果有，才执行提交和推送
           if git diff --staged --quiet; then
