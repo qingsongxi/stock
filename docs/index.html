@@ -1,185 +1,224 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>投资组合仪表盘</title>
     <!-- 新增：引入 Poppins 字体 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <!-- 新增：引入 Font Awesome 图标库 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
     <!-- 引入 Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <!-- 里添加 Chart.js 日期适配器 -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div class="main-container">
-        <!-- Tab 导航 -->
-        <nav class="tab-nav">
-            <button id="tab-summary" class="tab-button active"><i class="fas fa-chart-pie"></i> 资产概览</button>
-            <button id="tab-positions" class="tab-button"><i class="fas fa-edit"></i> 仓位更新</button>
-            <button id="tab-settings" class="tab-button"><i class="fas fa-cog"></i> 其他设置</button>
-        </nav>
+      <!-- Tab 导航 -->
+      <nav class="tab-nav">
+        <button id="tab-summary" class="tab-button active">
+          <i class="fas fa-chart-pie"></i> 资产概览
+        </button>
+        <button id="tab-positions" class="tab-button">
+          <i class="fas fa-edit"></i> 仓位更新
+        </button>
+        <button id="tab-settings" class="tab-button">
+          <i class="fas fa-cog"></i> 其他设置
+        </button>
+      </nav>
 
-        <!-- 内容面板 -->
-        <main class="content-area">
-            <!-- 资产概览面板 -->
-            <div id="summary-panel" class="tab-panel active">
-                <div id="summary-container">
-                    <!-- 修改开始：将 p 标签包裹在 div 中，并添加图标 -->
-                    <div class="total-value-container">
-                        <p id="total-value-display" class="clickable-summary">总资产：正在加载...</p>
-                        <i id="toggle-visibility-btn" class="fas fa-eye" title="切换资产可见性"></i>
-                    </div>
-                    <!-- 修改结束 -->
-
-                    <!-- 收益率展示容器 -->
-                    <div id="returns-display" class="returns-container">
-                        <!-- 收益率数据将由 JS 动态加载 -->
-                    </div>
-
-                    <div class="charts-container">
-                        <!-- 修改开始：将图片替换为Canvas容器 -->
-                        <div class="value-chart-container">
-                            <canvas id="portfolio-value-chart"></canvas>
-                        </div>
-                        <!-- 修改结束 -->
-
-                        <!-- 替换静态饼图为Canvas -->
-                        <div class="pie-chart-container">
-                            <canvas id="portfolio-pie-chart"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ========== 新增：恐慌贪婪指数图表容器 ========== -->
-            <div class="fear-greed-wrapper-container">
-                <div class="pie-chart-container"> <!-- 复用现有样式 -->
-                    <div class="fear-greed-header">
-                        <h3>CNN 恐慌与贪婪指数</h3>
-                        <p id="fg-last-updated">数据最后更新于: ...</p>
-                    </div>
-                    <div class="fear-greed-main-content">
-                        <div class="fear-greed-gauge-area">
-                            <canvas id="fear-greed-gauge"></canvas>
-                            <div class="gauge-center-text">
-                                <span id="fg-score-value">...</span>
-                                <span id="fg-score-rating">...</span>
-                            </div>
-                        </div>
-                        <div class="fear-greed-history-area">
-                            <canvas id="fear-greed-history-chart"></canvas>
-                        </div>
-                    </div>
-                     <div class="fear-greed-summary-info">
-                        <div class="summary-item">
-                            <span class="summary-label">昨日收盘</span>
-                            <span id="fg-prev-close" class="summary-value">...</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">一周前</span>
-                            <span id="fg-prev-week" class="summary-value">...</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">一个月前</span>
-                            <span id="fg-prev-month" class="summary-value">...</span>
-                        </div>
-                         <div class="summary-item">
-                            <span class="summary-label">一年前</span>
-                            <span id="fg-prev-year" class="summary-value">...</span>
-                        </div>
-                    </div>
-                </div>
+      <!-- 内容面板 -->
+      <main class="content-area">
+        <!-- 资产概览面板 -->
+        <div id="summary-panel" class="tab-panel active">
+          <div id="summary-container">
+            <!-- 修改开始：将 p 标签包裹在 div 中，并添加图标 -->
+            <div class="total-value-container">
+              <p id="total-value-display" class="clickable-summary">
+                总资产：正在加载...
+              </p>
+              <i
+                id="toggle-visibility-btn"
+                class="fas fa-eye"
+                title="切换资产可见性"
+              ></i>
             </div>
-            <!-- ========== 新增内容结束 ========== -->
-                        <!-- ========== 新增：额外指标历史图表 (新布局) ========== -->
-        <!-- VIX 全宽图表 -->
-        <div class="vix-full-width-container">
+            <!-- 修改结束 -->
+
+            <!-- 收益率展示容器 -->
+            <div id="returns-display" class="returns-container">
+              <!-- 收益率数据将由 JS 动态加载 -->
+            </div>
+
+            <div class="charts-container">
+              <!-- 修改开始：将图片替换为Canvas容器 -->
+              <div class="value-chart-container">
+                <canvas id="portfolio-value-chart"></canvas>
+              </div>
+              <!-- 修改结束 -->
+
+              <!-- 替换静态饼图为Canvas -->
+              <div class="pie-chart-container">
+                <canvas id="portfolio-pie-chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========== 新增：恐慌贪婪指数图表容器 ========== -->
+          <div class="fear-greed-wrapper-container">
             <div class="pie-chart-container">
-                <h3 class="chart-title">市场波动率 (VIX)</h3>
-                <div id="vix-rating-badge" class="chart-rating-badge"></div>
-                <div class="chart-canvas-wrapper">
-                    <canvas id="vix-chart"></canvas>
+              <!-- 复用现有样式 -->
+              <div class="fear-greed-header">
+                <h3>CNN 恐慌与贪婪指数</h3>
+                <p id="fg-last-updated">数据最后更新于: ...</p>
+              </div>
+              <div class="fear-greed-main-content">
+                <div class="fear-greed-gauge-area">
+                  <canvas id="fear-greed-gauge"></canvas>
+                  <div class="gauge-center-text">
+                    <span id="fg-score-value">...</span>
+                    <span id="fg-score-rating">...</span>
+                  </div>
                 </div>
+                <div class="fear-greed-history-area">
+                  <canvas id="fear-greed-history-chart"></canvas>
+                </div>
+              </div>
+              <div class="fear-greed-summary-info">
+                <div class="summary-item">
+                  <span class="summary-label">昨日收盘</span>
+                  <span id="fg-prev-close" class="summary-value">...</span>
+                </div>
+                <div class="summary-item">
+                  <span class="summary-label">一周前</span>
+                  <span id="fg-prev-week" class="summary-value">...</span>
+                </div>
+                <div class="summary-item">
+                  <span class="summary-label">一个月前</span>
+                  <span id="fg-prev-month" class="summary-value">...</span>
+                </div>
+                <div class="summary-item">
+                  <span class="summary-label">一年前</span>
+                  <span id="fg-prev-year" class="summary-value">...</span>
+                </div>
+              </div>
             </div>
+          </div>
+          <!-- ========== 新增内容结束 ========== -->
+          <!-- ========== 新增：额外指标历史图表 (新布局) ========== -->
+          <!-- VIX 全宽图表 -->
+          <div class="vix-full-width-container">
+            <div class="pie-chart-container">
+              <h3 class="chart-title">市场波动率 (VIX)</h3>
+              <div id="vix-rating-badge" class="chart-rating-badge"></div>
+              <div class="chart-canvas-wrapper">
+                <canvas id="vix-chart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- 强度和宽度并排图表 -->
+          <div class="fear-greed-additional-charts">
+            <div class="pie-chart-container">
+              <h3 class="chart-title">股价强度历史</h3>
+              <div id="strength-rating-badge" class="chart-rating-badge"></div>
+              <div class="chart-canvas-wrapper">
+                <canvas id="stock-strength-chart"></canvas>
+              </div>
+            </div>
+            <div class="pie-chart-container">
+              <h3 class="chart-title">股价宽度历史</h3>
+              <div id="breadth-rating-badge" class="chart-rating-badge"></div>
+              <div class="chart-canvas-wrapper">
+                <canvas id="stock-breadth-chart"></canvas>
+              </div>
+            </div>
+          </div>
+          <!-- ========== 新增内容结束 ========== -->
+
+          <div class="summary-footer">
+            <p>数据最后更新于 <span id="last-updated-time">...</span></p>
+            <button id="force-refresh-btn" class="action-btn">
+              <i class="fas fa-sync-alt"></i> 重载数据
+            </button>
+            <button id="run-workflow-btn-summary" class="action-btn">
+              <i class="fas fa-rocket"></i> 更新数据
+            </button>
+          </div>
         </div>
 
-        <!-- 强度和宽度并排图表 -->
-        <div class="fear-greed-additional-charts">
-            <div class="pie-chart-container">
-                <h3 class="chart-title">股价强度历史</h3>
-                <div id="strength-rating-badge" class="chart-rating-badge"></div>
-                <div class="chart-canvas-wrapper">
-                    <canvas id="stock-strength-chart"></canvas>
-                </div>
-            </div>
-            <div class="pie-chart-container">
-                <h3 class="chart-title">股价宽度历史</h3>
-                <div id="breadth-rating-badge" class="chart-rating-badge"></div>
-                <div class="chart-canvas-wrapper">
-                    <canvas id="stock-breadth-chart"></canvas>
-                </div>
-            </div>
+        <!-- 仓位更新面板 -->
+        <div id="positions-panel" class="tab-panel">
+          <div id="positions-editor"></div>
+          <div class="editor-actions">
+            <button id="save-btn-positions" class="action-btn">
+              <i class="fas fa-save"></i> 保存仓位
+            </button>
+            <button
+              id="logout-btn-positions"
+              class="action-btn logout-btn hidden"
+            >
+              <i class="fas fa-sign-out-alt"></i> 清除授权
+            </button>
+            <div id="status-msg-positions" class="status-msg"></div>
+          </div>
         </div>
-        <!-- ========== 新增内容结束 ========== -->
 
-
-                <div class="summary-footer">
-                    <p>数据最后更新于 <span id="last-updated-time">...</span></p>
-                    <button id="force-refresh-btn" class="action-btn"><i class="fas fa-sync-alt"></i> 重载数据</button>
-                    <button id="run-workflow-btn-summary" class="action-btn"><i class="fas fa-rocket"></i> 更新数据</button>
-                </div>
-            </div>
-
-            <!-- 仓位更新面板 -->
-            <div id="positions-panel" class="tab-panel">
-                <div id="positions-editor"></div>
-                <div class="editor-actions">
-                    <button id="save-btn-positions" class="action-btn"><i class="fas fa-save"></i> 保存仓位</button>
-                    <button id="logout-btn-positions" class="action-btn logout-btn hidden"><i class="fas fa-sign-out-alt"></i> 清除授权</button>
-                    <div id="status-msg-positions" class="status-msg"></div>
-                </div>
-            </div>
-
-            <!-- 其他设置面板 -->
-            <div id="settings-panel" class="tab-panel">
-                <div id="settings-editor"></div>
-                 <div class="editor-actions">
-                     <button id="save-btn-settings" class="action-btn"><i class="fas fa-save"></i> 保存设置</button>
-                     <button id="logout-btn-settings" class="action-btn logout-btn hidden"><i class="fas fa-sign-out-alt"></i> 清除授权</button>
-                    <div id="status-msg-settings" class="status-msg"></div>
-                </div>
-            </div>
-        </main>
+        <!-- 其他设置面板 -->
+        <div id="settings-panel" class="tab-panel">
+          <div id="settings-editor"></div>
+          <div class="editor-actions">
+            <button id="save-btn-settings" class="action-btn">
+              <i class="fas fa-save"></i> 保存设置
+            </button>
+            <button
+              id="logout-btn-settings"
+              class="action-btn logout-btn hidden"
+            >
+              <i class="fas fa-sign-out-alt"></i> 清除授权
+            </button>
+            <div id="status-msg-settings" class="status-msg"></div>
+          </div>
+        </div>
+      </main>
     </div>
 
     <!-- Token 输入弹窗 (Modal) -->
     <div id="modal-backdrop" class="hidden"></div>
     <div id="token-modal" class="hidden">
-        <h3><i class="fas fa-key"></i> 需要授权</h3>
-        <p>请输入您的 Personal Access Token 以继续。</p>
-        <input type="password" id="modal-token-input" placeholder="粘贴拥有 read/write contents 和 actions 权限的PAT">
-        <div id="modal-status-msg" class="status-msg"></div>
-        <div class="modal-actions">
-            <button id="modal-cancel-btn">取消</button>
-            <button id="modal-confirm-btn">确认</button>
-        </div>
+      <h3><i class="fas fa-key"></i> 需要授权</h3>
+      <p>请输入您的 Personal Access Token 以继续。</p>
+      <input
+        type="password"
+        id="modal-token-input"
+        placeholder="粘贴拥有 read/write contents 和 actions 权限的PAT"
+      />
+      <div id="modal-status-msg" class="status-msg"></div>
+      <div class="modal-actions">
+        <button id="modal-cancel-btn">取消</button>
+        <button id="modal-confirm-btn">确认</button>
+      </div>
     </div>
 
     <!-- 历史数据表格弹窗 -->
     <div id="history-modal-backdrop" class="modal-backdrop-new hidden"></div>
     <div id="history-modal-container" class="hidden">
-        <div id="history-table-content">
-            <!-- 表格将由 JS 动态生成并插入此处 -->
-        </div>
+      <div id="history-table-content">
+        <!-- 表格将由 JS 动态生成并插入此处 -->
+      </div>
     </div>
 
     <script src="script.js"></script>
     <script src="fear-greed-chart.js"></script>
-</body>
+  </body>
 </html>
