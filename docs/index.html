@@ -245,6 +245,40 @@
               </div>
             </div>
           </div>
+
+          <!-- ========== 新增：宏观经济指标图表 ========== -->
+          <div class="fed-indicators-container">
+            <!-- Core CPI Chart -->
+            <div class="pie-chart-container">
+              <h3 class="chart-title">核心CPI (年增长率)</h3>
+              <div class="chart-canvas-wrapper">
+                <canvas id="core-cpi-chart"></canvas>
+              </div>
+            </div>
+            <!-- Core PCE Chart -->
+            <div class="pie-chart-container">
+              <h3 class="chart-title">核心PCE (年增长率)</h3>
+              <div class="chart-canvas-wrapper">
+                <canvas id="core-pce-chart"></canvas>
+              </div>
+            </div>
+            <!-- Unemployment Rate Chart -->
+            <div class="pie-chart-container">
+              <h3 class="chart-title">失业率</h3>
+              <div class="chart-canvas-wrapper">
+                <canvas id="unemployment-rate-chart"></canvas>
+              </div>
+            </div>
+            <!-- Consumer Sentiment Chart -->
+            <div class="pie-chart-container">
+              <h3 class="chart-title">密歇根大学消费者信心指数</h3>
+              <div class="chart-canvas-wrapper">
+                <canvas id="consumer-sentiment-chart"></canvas>
+              </div>
+            </div>
+          </div>
+          <!-- ========== 新增内容结束 ========== -->
+
           <!-- ========== 新增内容结束 ========== -->
 
           <div class="summary-footer">
@@ -321,5 +355,6 @@
 
     <script src="script.js"></script>
     <script src="fear-greed-chart.js"></script>
+    <script src="fed_data.js"></script>
   </body>
 </html>

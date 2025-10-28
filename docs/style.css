@@ -1108,3 +1108,33 @@ input.invalid {
 .economic-calendar-container {
   margin-top: 50px !important; /* 或者你需要的任何值 */
 }
+
+/* ========== 新增：宏观经济指标图表布局 ========== */
+.fed-indicators-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 两列布局 */
+  gap: 30px;
+  margin-top: 30px;
+  animation: fadeInUp 0.6s 0.8s ease-out backwards; /* 动画延迟，让之前的图表先出现 */
+}
+
+/* 统一图表高度 */
+.fed-indicators-container .chart-canvas-wrapper {
+  height: 250px;
+}
+
+/* 确保 Canvas 填满容器 */
+#core-cpi-chart,
+#core-pce-chart,
+#unemployment-rate-chart,
+#consumer-sentiment-chart {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* 响应式调整：在中等屏幕下，新图表变为单列 */
+@media (max-width: 1024px) {
+  .fed-indicators-container {
+    grid-template-columns: 1fr;
+  }
+}

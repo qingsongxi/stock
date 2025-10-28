@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-FRED Economic Indicators Data Fetcher (Last 5 Years)
-从FRED获取最近5年的指定宏观经济指标数据。
+FRED Economic Indicators Data Fetcher (Last 10 Years, Dynamic)
+从FRED获取从今天往前算10年的指定宏观经济指标数据。
 """
 
 import os
@@ -22,12 +22,12 @@ except ImportError:
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.dirname(SCRIPT_DIR)
 DATA_DIR = os.path.join(ROOT_DIR, 'data')
-OUTPUT_FILE = os.path.join(DATA_DIR, 'economic_indicators_5y.json')  # 使用新文件名以避免覆盖
+OUTPUT_FILE = os.path.join(DATA_DIR, 'economic_indicators.json')
 
 # 确保data目录存在
 os.makedirs(DATA_DIR, exist_ok=True)
 
-# --- FRED 指标定义 (只保留需要的指标) ---
+# --- FRED 指标定义 ---
 FRED_SERIES = {
     "CoreCPI": {
         "id": "CPILFESL",
@@ -73,11 +73,10 @@ def fetch_data_from_fred(fred_client, series_id, start_date):
 def main():
     """主执行函数"""
     print("=" * 60)
-    print("开始获取最近5年的宏观经济数据 (from FRED)")
+    print("开始获取最近10年的宏观经济数据 (from FRED)")
     print("=" * 60)
 
-    # 1. 设置起始日期和API密钥
-    # !!!重要!!! 请在此处填入您的FRED API密钥
+    # 1. 设置API密钥
     api_key = "70e364d8d04d3be1d82867924cd45d58"
     if api_key == "YOUR_API_KEY_HERE":
         print("错误: 请在脚本中填入您的FRED API密钥。")
@@ -85,10 +84,19 @@ def main():
 
     fred = Fred(api_key=api_key)
 
-    # 定义最近5年的起始日期
-    # 为了计算CPI/PCE的年增长率，我们需要额外一年的数据作为基础
-    start_date_5y = "2020-01-01"
-    start_date_for_yoy_calc = "2019-01-01"
+    # 动态计算起始日期
+    today = datetime.now()
+    # 获取10年数据，需要从10年前的日期开始
+    start_date_10y_dt = today - pd.DateOffset(years=10)
+    # 为了计算年增长率，我们需要额外一年的数据作为基础，所以从11年前开始
+    start_date_for_yoy_calc_dt = today - pd.DateOffset(years=11)
+
+    start_date_10y = start_date_10y_dt.strftime('%Y-%m-%d')
+    start_date_for_yoy_calc = start_date_for_yoy_calc_dt.strftime('%Y-%m-%d')
+
+    print(f"当前日期: {today.strftime('%Y-%m-%d')}")
+    print(f"动态计算数据起始日期 (10年): {start_date_10y}")
+    print(f"动态计算同比增长所需数据起始日期 (11年): {start_date_for_yoy_calc}\n")
 
     # 2. 循环获取所有指标
     all_indicators_data = {}
@@ -97,13 +105,13 @@ def main():
         # 对于年增长率指标，我们需要从FRED获取月度数据然后自己计算
         if "年增长率" in details["name"]:
             try:
-                print(f"  -> 正在获取并计算 {details['id']} 的5年年增长率...")
-                # 获取过去6年的月度数据，以确保能计算第1年的同比增长
+                print(f"  -> 正在获取并计算 {details['id']} 的10年年增长率...")
+                # 获取过去11年的月度数据，以确保能计算第1年的同比增长
                 monthly_data = fred.get_series(details['id'], observation_start=start_date_for_yoy_calc)
                 yearly_change = monthly_data.pct_change(periods=12) * 100
 
-                # 筛选出最近5年的数据
-                series = yearly_change[yearly_change.index >= start_date_5y].dropna()
+                # 筛选出最近10年的数据
+                series = yearly_change[yearly_change.index >= start_date_10y].dropna()
 
                 data = [
                     [int(ts.timestamp() * 1000), round(val, 2)]
@@ -113,8 +121,8 @@ def main():
                 print(f"  -> 计算 {details['id']} 年增长率失败: {e}")
                 data = None
         else:
-            # 对于其他指标，直接从5年前开始获取
-            data = fetch_data_from_fred(fred, details["id"], start_date=start_date_5y)
+            # 对于其他指标，直接从10年前开始获取
+            data = fetch_data_from_fred(fred, details["id"], start_date=start_date_10y)
 
         if data:
             all_indicators_data[key] = {
