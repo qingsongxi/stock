@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const { owner, repo } = getRepoInfoFromURL();
-    // !!! 注意: 确认Python脚本输出的文件名是 economic_indicators_10y.json
-    const FED_DATA_URL = `https://raw.githubusercontent.com/${owner}/${repo}/main/data/economic_indicators_10y.json`;
+    // !!! 注意: 确认Python脚本输出的文件名是 economic_indicators.json
+    const FED_DATA_URL = `https://raw.githubusercontent.com/${owner}/${repo}/main/data/economic_indicators.json`;
 
     // --- 图表样式常量 ---
     const CHART_GRID_COLOR = 'rgba(138, 153, 192, 0.15)';
