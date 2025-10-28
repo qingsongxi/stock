@@ -29,6 +29,13 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 # --- FRED 指标定义 ---
 FRED_SERIES = {
+    # ========== 新增：美联储资产负债表 ==========
+    "FedBalanceSheet": {
+        "id": "WALCL",
+        "name": "美联储总资产 (资产负债表)",
+        "unit": "百万美元"
+    },
+    # ==========================================
     "CoreCPI": {
         "id": "CPILFESL",
         "name": "核心消费者物价指数 (年增长率)",
@@ -60,10 +67,17 @@ def fetch_data_from_fred(fred_client, series_id, start_date):
         print(f"  -> 正在获取 {series_id} (从 {start_date} 开始)...")
         series = fred_client.get_series(series_id, observation_start=start_date)
         series = series.dropna()
-        data_list = [
-            [int(ts.timestamp() * 1000), round(val, 2)]
-            for ts, val in series.items()
-        ]
+        # 对于资产负债表这种数值巨大的数据，我们直接使用原始值，不进行额外的四舍五入处理
+        if series_id == 'WALCL':
+            data_list = [
+                [int(ts.timestamp() * 1000), int(val)]
+                for ts, val in series.items()
+            ]
+        else:
+            data_list = [
+                [int(ts.timestamp() * 1000), round(val, 2)]
+                for ts, val in series.items()
+            ]
         return data_list
     except Exception as e:
         print(f"  -> 获取 {series_id} 失败: {e}")
