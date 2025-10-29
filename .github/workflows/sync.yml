@@ -1,5 +1,5 @@
 # 为这个工作流命名
-name: sync.yml
+name: Sync Upstream
 
 on:
   # 你可以根据需要修改这个时间
@@ -17,6 +17,7 @@ jobs:
       - name: Checkout Your Repository
         uses: actions/checkout@v4
         with:
+          # fetch-depth: 0 非常重要，它获取所有历史记录，以便进行后续操作
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -33,15 +34,9 @@ jobs:
 
           # --- 1. (新增) 自动为老用户迁移文件结构 ---
           echo "Step 1: Checking for legacy file structure and migrating if necessary..."
-          # 我们通过检查根目录是否存在一个关键数据文件来判断是否为旧结构
           if [ -f "portfolio_details_history.csv" ]; then
             echo "  > Legacy structure detected. Migrating data files to the 'data/' directory..."
-            # 确保 data 目录存在
             mkdir -p data
-            # 使用 `git mv` 命令来移动文件。这会自动暂存文件的移动记录，比普通的`mv`更好。
-            # `find` 会查找根目录下的所有数据文件，然后 `git mv` 将它们移动到 data/ 目录。
-            # `-maxdepth 1` 确保只查找根目录，避免重复操作。
-            # `|| true` 防止在找不到任何文件时脚本出错。
             find . -maxdepth 1 \( -name "*.csv" -o -name "*.json" -o -name "*.png" \) -exec git mv -f {} data/ \; || true
             echo "  ✅ Migration complete. Your data files are now in the 'data' folder."
             echo "  ℹ️  This change will be committed along with the upstream sync."
@@ -49,26 +44,31 @@ jobs:
             echo "  > Modern 'data/' directory structure confirmed. No migration needed."
           fi
 
-          # --- 2. 备份你的数据文件 (基于新结构) ---
-          echo "Step 2: Backing up your data files..."
+          # --- 2. 备份你的数据文件 ---
+          echo "Step 2: Backing up your personal files..."
+          # 创建一个临时目录来存放备份
           mkdir -p .sync_backup_temp
           
-          echo "  > Backing up config.ini..."
           # 备份根目录的 config.ini
-          cp config.ini .sync_backup_temp/ 2>/dev/null || true
+          if [ -f "config.ini" ]; then
+            echo "  > Backing up config.ini..."
+            cp config.ini .sync_backup_temp/
+          fi
           
-          echo "  > Backing up the entire 'data' directory..."
           # 备份整个 data 文件夹
-          cp -r data .sync_backup_temp/ 2>/dev/null || true
+          if [ -d "data" ]; then
+            echo "  > Backing up the entire 'data' directory..."
+            cp -r data .sync_backup_temp/
+          fi
+          echo "✅ Backup complete."
 
-          echo "Backup complete."
-
-          # --- 3. 同步上游仓库 ---
+          # --- 3. 同步上游仓库 (核心修改部分) ---
           echo "Step 3: Syncing with upstream repository..."
           git remote add upstream https://github.com/cli117/stock_monitor.git 2>/dev/null || echo "Upstream remote already exists"
-          echo "Fetching from upstream..."
+          echo "  > Fetching from upstream..."
           git fetch upstream
           
+          # 确定上游的主分支是 main 还是 master
           if git show-ref --verify --quiet refs/remotes/upstream/main; then
             UPSTREAM_BRANCH="upstream/main"
           elif git show-ref --verify --quiet refs/remotes/upstream/master; then
@@ -77,48 +77,47 @@ jobs:
             echo "❌ Error: Neither main nor master branch found in upstream repository"
             exit 1
           fi
-
-          echo "Attempting to merge $UPSTREAM_BRANCH..."
-          if ! git merge $UPSTREAM_BRANCH --allow-unrelated-histories --no-edit; then
-            echo "❌ MERGE CONFLICT DETECTED! Sync aborted."
-            git merge --abort 2>/dev/null || true
-            rm -rf .sync_backup_temp
-            exit 1
-          fi
-          echo "✅ Merge successful - no conflicts detected"
+          
+          echo "  > Hard resetting local branch to match $UPSTREAM_BRANCH..."
+          # 使用 git reset --hard，强制让本地分支与上游分支完全一致
+          # 这会丢弃本地的所有 commit，从而避免任何合并冲突
+          git reset --hard $UPSTREAM_BRANCH
+          echo "✅ Reset successful. Local branch now matches upstream."
 
           # --- 4. 恢复你的数据文件 ---
-          echo "Step 4: Restoring your data files..."
+          echo "Step 4: Restoring your personal files..."
+          # 检查备份文件夹是否存在且不为空
           if [ -n "$(ls -A .sync_backup_temp/ 2>/dev/null)" ]; then
             echo "  > Restoring config.ini and the 'data' directory..."
             # -r 递归复制, -f 强制覆盖，将备份的内容恢复到原位
-            cp -rf .sync_backup_temp/* . 2>/dev/null || true
+            # 使用 `cp -rf .sync_backup_temp/. .` 确保能正确处理隐藏文件和目录
+            cp -rf .sync_backup_temp/. .
             echo "✅ Restore complete."
           else
-            echo "ℹ️  No data files needed to be restored."
+            echo "ℹ️  No personal files were found in the backup. Nothing to restore."
           fi
 
           # --- 5. 清理临时文件夹 ---
-          echo "Step 5: Cleaning up..."
+          echo "Step 5: Cleaning up temporary backup..."
           rm -rf .sync_backup_temp
           echo "✅ Cleanup complete."
 
-          # --- 6. 提交并推送更新 ---
+          # --- 6. 提交并推送更新 (核心修改部分) ---
           echo "Step 6: Committing and pushing changes..."
-          # 检查是否有文件变动（包括迁移的文件和同步来的新代码）
-          if git diff --quiet && git diff --staged --quiet; then
+          # 检查是否有文件变动（通常是恢复的个人数据文件）
+          # `git add -A` 会暂存所有变动，包括恢复的文件和迁移的文件
+          git add -A
+          if git diff --staged --quiet; then
             echo "ℹ️  Your repository is already up-to-date. No push needed."
           else
             echo "📝 Changes detected. Committing and pushing to your repository..."
-            git add -A
-            # 修改 commit 信息，如果迁移发生了，就添加说明
-            if git diff --staged --quiet -- "data/"; then
-              git commit -m "chore: Daily sync with upstream [$(date +'%Y-%m-%d %H:%M:%S UTC')]"
-            else
-              git commit -m "feat: Auto-migrate data to new structure & sync upstream [$(date +'%Y-%m-%d %H:%M:%S UTC')]"
-            fi
+            # 修改 commit 信息，使其更准确
+            git commit -m "chore: Sync with upstream and restore user data [$(date +'%Y-%m-%d %H:%M:%S UTC')]"
             
-            if git push; then
+            echo "  > Force pushing changes to your repository..."
+            # 因为我们重写了历史 (git reset --hard)，所以必须使用 --force
+            # 这在这个场景下是安全的，因为它只影响用户的fork仓库
+            if git push --force; then
               echo "✅ Push successful!"
             else
               echo "❌ Push failed!"
