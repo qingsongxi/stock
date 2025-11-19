@@ -510,7 +510,9 @@ async function createPortfolioValueChart() {
     const parseValue = (cell) => {
       if (typeof cell !== "string") return 0;
       const match = cell.match(/\(([^|]+)/);
-      return match ? parseFloat(match[1]) : parseFloat(cell) || 0;
+      const value = match ? parseFloat(match[1]) : parseFloat(cell) || 0;
+      // 过滤掉负值，使其不影响堆叠图
+      return value < 0 ? 0 : value;
     };
 
     dataRows.forEach((row) => {

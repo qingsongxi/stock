@@ -3,163 +3,133 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>投资组合仪表盘</title>
-    <!-- 新增：引入 Poppins 字体 -->
+    <title>投资组合仪表盘 | Cyber Monitor</title>
+    <!-- 引入 Poppins 字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <!-- 新增：引入 Font Awesome 图标库 -->
+    <!-- 引入 Font Awesome 图标库 -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
     <!-- 引入 Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
-    <!-- 里添加 Chart.js 日期适配器 -->
+    <!-- 引入 Chart.js 日期适配器 -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <!-- 背景装饰元素 -->
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+
     <div class="main-container">
       <!-- Tab 导航 -->
       <nav class="tab-nav">
-        <button id="tab-summary" class="tab-button active">
-          <i class="fas fa-chart-pie"></i> 资产概览
-        </button>
-        <button id="tab-positions" class="tab-button">
-          <i class="fas fa-edit"></i> 仓位更新
-        </button>
-        <button id="tab-settings" class="tab-button">
-          <i class="fas fa-cog"></i> 其他设置
-        </button>
+        <div class="nav-brand"><i class="fas fa-bolt"></i> MONITOR</div>
+        <div class="nav-items">
+          <button id="tab-summary" class="tab-button active">
+            <i class="fas fa-chart-pie"></i> 资产概览
+          </button>
+          <button id="tab-positions" class="tab-button">
+            <i class="fas fa-edit"></i> 仓位更新
+          </button>
+          <button id="tab-settings" class="tab-button">
+            <i class="fas fa-cog"></i> 系统设置
+          </button>
+        </div>
       </nav>
 
       <!-- 内容面板 -->
       <main class="content-area">
-        <!-- TradingView Widget BEGIN -->
-        <div class="tradingview-widget-container">
-          <div class="tradingview-widget-container__widget"></div>
-          <div class="tradingview-widget-copyright">
-            <a
-              href="https://cn.tradingview.com/markets/"
-              rel="noopener nofollow"
-              target="_blank"
-              ><span class="blue-text"
-                >Track all markets on TradingView</span
-              ></a
+        <!-- TradingView Ticker Tape -->
+        <div class="tradingview-ticker-wrapper">
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script
+              type="text/javascript"
+              src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js"
+              async
             >
+                {
+                "symbols": [
+                  { "proName": "FX:USDCNH", "title": "USD/CNH" },
+                  { "proName": "NASDAQ:QQQ", "title": "NASDAQ 100" },
+                  { "proName": "AMEX:VOO", "title": "S&P 500" },
+                  { "proName": "THINKMARKETS:USDINDEX", "title": "DXY" },
+                  { "proName": "INDEX:S5TH", "title": "S&P 200 AVG+" },
+                  { "proName": "INDEX:S5FI", "title": "S&P 50 AVG+" }
+                ],
+                "colorTheme": "dark",
+                "isTransparent": true,
+                "displayMode": "regular",
+                "locale": "zh_CN"
+              }
+            </script>
           </div>
-          <script
-            type="text/javascript"
-            src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js"
-            async
-          >
-              {
-              "symbols": [
-                {
-                  "proName": "FX:USDCNH",
-                  "title": "USD to CNH"
-                },
-                {
-                  "proName": "NASDAQ:QQQ",
-                  "title": "NASDAQ 100"
-                },
-                {
-                  "proName": "AMEX:VOO",
-                  "title": "S&P500"
-                },
-                {
-                  "proName": "THINKMARKETS:USDINDEX",
-                  "title": "USD INDEX"
-                },
-                {
-                  "proName": "INDEX:S5TH",
-                  "title": "S&P 200 AVG+"
-                },
-                {
-                  "proName": "INDEX:S5FI",
-                  "title": "S&P 50 AVG+"
-                },
-                {
-                  "proName": "INDEX:S5TW",
-                  "title": "S&P 20 AVG+"
-                }
-              ],
-              "colorTheme": "dark",
-              "locale": "zh_CN",
-              "largeChartUrl": "",
-              "isTransparent": true,
-              "showSymbolLogo": true,
-              "displayMode": "regular"
-            }
-          </script>
         </div>
-        <!-- TradingView Widget END -->
+
         <!-- 资产概览面板 -->
         <div id="summary-panel" class="tab-panel active">
           <div id="summary-container">
-            <!-- 修改开始：将 p 标签包裹在 div 中，并添加图标 -->
-            <div class="total-value-container">
-              <p id="total-value-display" class="clickable-summary">
-                总资产：正在加载...
-              </p>
-              <i
-                id="toggle-visibility-btn"
-                class="fas fa-eye"
-                title="切换资产可见性"
-              ></i>
-            </div>
-            <!-- 修改结束 -->
-
-            <!-- 收益率展示容器 -->
-            <div id="returns-display" class="returns-container">
-              <!-- 收益率数据将由 JS 动态加载 -->
-            </div>
-
-            <div class="charts-container">
-              <!-- 修改开始：将图片替换为Canvas容器 -->
-              <div class="value-chart-container">
-                <canvas id="portfolio-value-chart"></canvas>
+            <!-- 总资产展示 -->
+            <div class="total-value-card">
+              <div class="total-value-wrapper">
+                <span class="label-text">NET LIQUIDATION VALUE</span>
+                <div class="value-row">
+                    <h1 id="total-value-display" class="clickable-summary">Loading...</h1>
+                    <i id="toggle-visibility-btn" class="fas fa-eye" title="切换可见性"></i>
+                </div>
               </div>
-              <!-- 修改结束 -->
+              <div class="refresh-indicator">
+                 <span id="last-updated-time">Checking...</span>
+                 <i class="fas fa-wifi"></i>
+              </div>
+            </div>
 
-              <!-- 替换静态饼图为Canvas -->
-              <div class="pie-chart-container">
-                <canvas id="portfolio-pie-chart"></canvas>
+            <!-- 收益率展示 -->
+            <div id="returns-display" class="returns-grid">
+              <!-- 动态加载 -->
+            </div>
+
+            <!-- 核心图表区 -->
+            <div class="charts-grid">
+              <!-- 堆叠图 -->
+              <div class="chart-card value-chart-container">
+                <div class="card-header">
+                    <h3><i class="fas fa-layer-group"></i> 资产历史堆叠</h3>
+                    <div class="live-badge">LIVE</div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="portfolio-value-chart"></canvas>
+                </div>
+              </div>
+
+              <!-- 饼图 -->
+              <div class="chart-card pie-chart-container">
+                <div class="card-header">
+                    <h3><i class="fas fa-chart-donut"></i> 资产分布</h3>
+                </div>
+                <div class="chart-body">
+                    <canvas id="portfolio-pie-chart"></canvas>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- ========== 新增：TradingView 财经日历 ========== -->
-          <div
-            class="pie-chart-container economic-calendar-container"
-            style="animation: fadeInUp 0.6s 1s ease-out backwards"
-          >
+          <!-- 财经日历 (代码保留，不显示) -->
+          <!--
+          <div class="chart-card economic-calendar-container" style="margin-top: 30px;">
             <h3 class="chart-title">重要财经日历</h3>
             <div style="height: 500px">
-              <!-- TradingView Widget BEGIN -->
-              <!-- TradingView Widget BEGIN -->
               <div class="tradingview-widget-container">
                 <div class="tradingview-widget-container__widget"></div>
-                <div class="tradingview-widget-copyright">
-                  <a
-                    href="https://tw.tradingview.com/economic-calendar/"
-                    rel="noopener nofollow"
-                    target="_blank"
-                    ><span class="blue-text"
-                      >Track all markets on TradingView</span
-                    ></a
-                  >
-                </div>
-                <script
-                  type="text/javascript"
-                  src="https://s3.tradingview.com/external-embedding/embed-widget-events.js"
-                  async
-                >
-                    {
+                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
+                {
                     "colorTheme": "dark",
                     "isTransparent": true,
                     "locale": "zh_TW",
@@ -167,148 +137,140 @@
                     "importanceFilter": "0,1",
                     "width": "100%",
                     "height": "100%"
-                  }
+                }
                 </script>
               </div>
-              <!-- TradingView Widget END -->
             </div>
           </div>
-          <!-- ========== 新增内容结束 ========== -->
+          -->
 
-          <!-- ========== 新增：恐慌贪婪指数图表容器 ========== -->
+          <!-- 恐慌贪婪指数 -->
           <div class="fear-greed-wrapper-container">
-            <div class="pie-chart-container">
-              <!-- 复用现有样式 -->
+            <div class="chart-card fear-greed-card">
               <div class="fear-greed-header">
-                <h3>CNN 恐慌与贪婪指数</h3>
-                <p id="fg-last-updated">数据最后更新于: ...</p>
+                <h3><i class="fas fa-biohazard"></i> CNN 恐慌与贪婪指数</h3>
+                <p id="fg-last-updated">Updating...</p>
               </div>
-              <div class="fear-greed-main-content">
-                <div class="fear-greed-gauge-area">
+              <div class="fear-greed-content">
+                <div class="gauge-wrapper">
                   <canvas id="fear-greed-gauge"></canvas>
-                  <div class="gauge-center-text">
-                    <span id="fg-score-value">...</span>
-                    <span id="fg-score-rating">...</span>
+                  <div class="gauge-overlay">
+                    <span id="fg-score-value">--</span>
+                    <span id="fg-score-rating">Waiting</span>
                   </div>
                 </div>
-                <div class="fear-greed-history-area">
+                <div class="history-wrapper">
                   <canvas id="fear-greed-history-chart"></canvas>
                 </div>
               </div>
-              <div class="fear-greed-summary-info">
-                <div class="summary-item">
-                  <span class="summary-label">昨日收盘</span>
-                  <span id="fg-prev-close" class="summary-value">...</span>
+              <div class="fear-greed-stats">
+                <div class="stat-box">
+                  <span class="lbl">昨日</span>
+                  <span id="fg-prev-close" class="val">--</span>
                 </div>
-                <div class="summary-item">
-                  <span class="summary-label">一周前</span>
-                  <span id="fg-prev-week" class="summary-value">...</span>
+                <div class="stat-box">
+                  <span class="lbl">上周</span>
+                  <span id="fg-prev-week" class="val">--</span>
                 </div>
-                <div class="summary-item">
-                  <span class="summary-label">一个月前</span>
-                  <span id="fg-prev-month" class="summary-value">...</span>
+                <div class="stat-box">
+                  <span class="lbl">上月</span>
+                  <span id="fg-prev-month" class="val">--</span>
                 </div>
-                <div class="summary-item">
-                  <span class="summary-label">一年前</span>
-                  <span id="fg-prev-year" class="summary-value">...</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- ========== 新增内容结束 ========== -->
-          <!-- ========== 新增：额外指标历史图表 (新布局) ========== -->
-          <!-- VIX 全宽图表 -->
-          <div class="vix-full-width-container">
-            <div class="pie-chart-container">
-              <h3 class="chart-title">市场波动率 (VIX)</h3>
-              <div id="vix-rating-badge" class="chart-rating-badge"></div>
-              <div class="chart-canvas-wrapper">
-                <canvas id="vix-chart"></canvas>
+                <div class="stat-box">
+                    <span class="lbl">去年</span>
+                    <span id="fg-prev-year" class="val">--</span>
+                  </div>
               </div>
             </div>
           </div>
 
-          <!-- 强度和宽度并排图表 -->
-          <div class="fear-greed-additional-charts">
-            <div class="pie-chart-container">
-              <h3 class="chart-title">股价强度历史</h3>
-              <div id="strength-rating-badge" class="chart-rating-badge"></div>
-              <div class="chart-canvas-wrapper">
+          <!-- 市场深度指标 -->
+          <div class="vix-section">
+             <div class="chart-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-wave-square"></i> 市场波动率 (VIX)</h3>
+                    <div id="vix-rating-badge" class="status-badge">--</div>
+                </div>
+                <div class="chart-body wide-chart">
+                    <canvas id="vix-chart"></canvas>
+                </div>
+             </div>
+          </div>
+
+          <div class="market-breadth-grid">
+            <div class="chart-card">
+              <div class="card-header">
+                <h3><i class="fas fa-dumbbell"></i> 股价强度</h3>
+                <div id="strength-rating-badge" class="status-badge">--</div>
+              </div>
+              <div class="chart-body">
                 <canvas id="stock-strength-chart"></canvas>
               </div>
             </div>
-            <div class="pie-chart-container">
-              <h3 class="chart-title">股价宽度历史</h3>
-              <div id="breadth-rating-badge" class="chart-rating-badge"></div>
-              <div class="chart-canvas-wrapper">
+            <div class="chart-card">
+              <div class="card-header">
+                <h3><i class="fas fa-arrows-alt-h"></i> 股价宽度</h3>
+                <div id="breadth-rating-badge" class="status-badge">--</div>
+              </div>
+              <div class="chart-body">
                 <canvas id="stock-breadth-chart"></canvas>
               </div>
             </div>
           </div>
 
-          <!-- ========== 新增：宏观经济指标图表 ========== -->
-          <div class="pie-chart-container fed-balance-sheet-container">
-            <h3 class="chart-title">美联储总资产 (Fed Balance Sheet)</h3>
-            <div class="chart-canvas-wrapper">
-              <canvas id="fed-balance-sheet-chart"></canvas>
+          <!-- 宏观经济指标 -->
+          <div class="macro-section-title">MACRO ECONOMICS</div>
+
+          <div class="chart-card fed-balance-card">
+             <div class="card-header">
+                <h3>美联储总资产 (Fed Balance Sheet)</h3>
+             </div>
+             <div class="chart-body tall-chart">
+                <canvas id="fed-balance-sheet-chart"></canvas>
+             </div>
+          </div>
+
+          <div class="fed-grid">
+            <div class="chart-card">
+              <h3>核心 CPI (YoY)</h3>
+              <div class="mini-chart-body"><canvas id="core-cpi-chart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <h3>核心 PCE (YoY)</h3>
+              <div class="mini-chart-body"><canvas id="core-pce-chart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <h3>失业率</h3>
+              <div class="mini-chart-body"><canvas id="unemployment-rate-chart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <h3>消费者信心指数</h3>
+              <div class="mini-chart-body"><canvas id="consumer-sentiment-chart"></canvas></div>
             </div>
           </div>
-          <div class="fed-indicators-container">
-            <!-- Core CPI Chart -->
-            <div class="pie-chart-container">
-              <h3 class="chart-title">核心CPI (年增长率)</h3>
-              <div class="chart-canvas-wrapper">
-                <canvas id="core-cpi-chart"></canvas>
-              </div>
-            </div>
-            <!-- Core PCE Chart -->
-            <div class="pie-chart-container">
-              <h3 class="chart-title">核心PCE (年增长率)</h3>
-              <div class="chart-canvas-wrapper">
-                <canvas id="core-pce-chart"></canvas>
-              </div>
-            </div>
-            <!-- Unemployment Rate Chart -->
-            <div class="pie-chart-container">
-              <h3 class="chart-title">失业率</h3>
-              <div class="chart-canvas-wrapper">
-                <canvas id="unemployment-rate-chart"></canvas>
-              </div>
-            </div>
-            <!-- Consumer Sentiment Chart -->
-            <div class="pie-chart-container">
-              <h3 class="chart-title">密歇根大学消费者信心指数</h3>
-              <div class="chart-canvas-wrapper">
-                <canvas id="consumer-sentiment-chart"></canvas>
-              </div>
-            </div>
-          </div>
-          <!-- ========== 新增内容结束 ========== -->
 
-          <!-- ========== 新增内容结束 ========== -->
-
-          <div class="summary-footer">
-            <p>数据最后更新于 <span id="last-updated-time">...</span></p>
-            <button id="force-refresh-btn" class="action-btn">
-              <i class="fas fa-sync-alt"></i> 重载数据
+          <div class="control-footer">
+            <button id="force-refresh-btn" class="neon-btn cyan-btn">
+              <i class="fas fa-sync-alt"></i> 强制刷新
             </button>
-            <button id="run-workflow-btn-summary" class="action-btn">
-              <i class="fas fa-rocket"></i> 更新数据
+            <button id="run-workflow-btn-summary" class="neon-btn purple-btn">
+              <i class="fas fa-rocket"></i> 触发更新
             </button>
           </div>
         </div>
 
         <!-- 仓位更新面板 -->
         <div id="positions-panel" class="tab-panel">
+          <div class="panel-header">
+             <h2>仓位管理</h2>
+             <p>直接修改下方的配置并保存，系统将自动同步。</p>
+          </div>
           <div id="positions-editor"></div>
-          <div class="editor-actions">
-            <button id="save-btn-positions" class="action-btn">
-              <i class="fas fa-save"></i> 保存仓位
+          <div class="editor-footer">
+            <button id="save-btn-positions" class="neon-btn green-btn">
+              <i class="fas fa-save"></i> 保存变更
             </button>
-            <button
-              id="logout-btn-positions"
-              class="action-btn logout-btn hidden"
-            >
+            <button id="logout-btn-positions" class="neon-btn red-btn logout-btn hidden">
               <i class="fas fa-sign-out-alt"></i> 清除授权
             </button>
             <div id="status-msg-positions" class="status-msg"></div>
@@ -317,15 +279,15 @@
 
         <!-- 其他设置面板 -->
         <div id="settings-panel" class="tab-panel">
+          <div class="panel-header">
+            <h2>系统配置</h2>
+          </div>
           <div id="settings-editor"></div>
-          <div class="editor-actions">
-            <button id="save-btn-settings" class="action-btn">
-              <i class="fas fa-save"></i> 保存设置
+          <div class="editor-footer">
+            <button id="save-btn-settings" class="neon-btn green-btn">
+              <i class="fas fa-save"></i> 保存配置
             </button>
-            <button
-              id="logout-btn-settings"
-              class="action-btn logout-btn hidden"
-            >
+            <button id="logout-btn-settings" class="neon-btn red-btn logout-btn hidden">
               <i class="fas fa-sign-out-alt"></i> 清除授权
             </button>
             <div id="status-msg-settings" class="status-msg"></div>
@@ -334,33 +296,34 @@
       </main>
     </div>
 
-    <!-- Token 输入弹窗 (Modal) -->
+    <!-- Token 弹窗 -->
     <div id="modal-backdrop" class="hidden"></div>
-    <div id="token-modal" class="hidden">
-      <h3><i class="fas fa-key"></i> 需要授权</h3>
-      <p>请输入您的 Personal Access Token 以继续。</p>
-      <input
-        type="password"
-        id="modal-token-input"
-        placeholder="粘贴拥有 read/write contents 和 actions 权限的PAT"
-      />
+    <div id="token-modal" class="glass-modal hidden">
+      <div class="modal-icon"><i class="fas fa-fingerprint"></i></div>
+      <h3>身份验证</h3>
+      <p>请输入 GitHub Personal Access Token 以获取写权限。</p>
+      <div class="input-group">
+        <input type="password" id="modal-token-input" placeholder="ghp_xxxxxxxxxxxx" />
+      </div>
       <div id="modal-status-msg" class="status-msg"></div>
       <div class="modal-actions">
-        <button id="modal-cancel-btn">取消</button>
-        <button id="modal-confirm-btn">确认</button>
+        <button id="modal-cancel-btn" class="text-btn">取消</button>
+        <button id="modal-confirm-btn" class="neon-btn cyan-btn">验证并进入</button>
       </div>
     </div>
 
     <!-- 历史数据表格弹窗 -->
     <div id="history-modal-backdrop" class="modal-backdrop-new hidden"></div>
-    <div id="history-modal-container" class="hidden">
-      <div id="history-table-content">
-        <!-- 表格将由 JS 动态生成并插入此处 -->
+    <div id="history-modal-container" class="glass-modal large hidden">
+      <div class="modal-header">
+          <h3>历史数据归档</h3>
+          <span class="close-modal-hint">点击背景关闭</span>
       </div>
+      <div id="history-table-content"></div>
     </div>
 
     <script src="script.js"></script>
-    <script src="fear-greed-chart.js"></script>
     <script src="fed_data.js"></script>
+    <script src="fear-greed-chart.js"></script>
   </body>
 </html>
