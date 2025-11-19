@@ -11,18 +11,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // !!! 注意: 确认Python脚本输出的文件名是 economic_indicators.json
   const FED_DATA_URL = `https://raw.githubusercontent.com/${owner}/${repo}/main/data/economic_indicators.json`;
 
-  // --- 图表样式常量 ---
-  const CHART_GRID_COLOR = "rgba(138, 153, 192, 0.15)";
-  const CHART_TICK_COLOR = "#8a99c0";
-  const CHART_FONT = { family: "Poppins", size: 12 };
+  // --- 图表样式常量 (修改为适配波普风格/白底) ---
+  const CHART_GRID_COLOR = "rgba(0, 0, 0, 0.05)"; // [修改] 网格线改为极淡的黑色
+  const CHART_TICK_COLOR = "#000000";             // [修改] 刻度文字改为纯黑
+  const CHART_FONT = { family: "Poppins", size: 12, weight: "600" }; // [修改] 字体加粗
 
   // --- 图表颜色定义 ---
   const INDICATOR_COLORS = {
-    // ========== 新增 ==========
     FedBalanceSheet: "#2ecc71", // 绿色
-    // ==========================
-    CoreCPI: "#3498db", // 蓝色
-    CorePCE: "#9b59b6", // 紫色
+    CoreCPI: "#3498db",         // 蓝色
+    CorePCE: "#9b59b6",         // 紫色
     UnemploymentRate: "#f1c40f", // 黄色
     ConsumerSentiment: "#e67e22", // 橙色
   };
@@ -43,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const indicators = data.indicators;
 
       // 为每个指标创建图表
-      // ========== 新增调用 ==========
       if (indicators.FedBalanceSheet) {
         createIndicatorChart(
           "fed-balance-sheet-chart",
@@ -51,7 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
           INDICATOR_COLORS.FedBalanceSheet
         );
       }
-      // ==========================
       createIndicatorChart(
         "core-cpi-chart",
         indicators.CoreCPI,
@@ -86,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const canvas = document.getElementById(id);
         if (canvas && canvas.getContext) {
           const ctx = canvas.getContext("2d");
-          ctx.fillStyle = "var(--negative-color)";
+          ctx.fillStyle = "#d50000"; // [修改] 错误文字颜色改为深红
           ctx.font = "16px Poppins";
           ctx.textAlign = "center";
           ctx.fillText("数据加载失败", canvas.width / 2, canvas.height / 2);
@@ -116,9 +112,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const dataPoints = indicatorData.data.map((d) => ({ x: d[0], y: d[1] }));
 
+    // 创建渐变背景
     const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
-    gradient.addColorStop(0, `${lineColor}80`);
-    gradient.addColorStop(1, `${lineColor}05`);
+    gradient.addColorStop(0, `${lineColor}80`); // 50% 透明度
+    gradient.addColorStop(1, `${lineColor}05`); // 接近透明
 
     chartInstances[canvasId] = new Chart(ctx, {
       type: "line",
@@ -133,8 +130,9 @@ document.addEventListener("DOMContentLoaded", () => {
             borderWidth: 2.5,
             pointRadius: 0,
             pointHoverRadius: 6,
-            pointHoverBorderWidth: 2,
-            pointHoverBackgroundColor: "#fff",
+            pointHoverBorderWidth: 2, // [修改] 悬浮点边框加粗
+            pointHoverBorderColor: "#000000", // [修改] 悬浮点边框黑色
+            pointHoverBackgroundColor: lineColor,
             fill: true,
           },
         ],
@@ -172,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   if (value >= 1000) return `${(value / 1000).toFixed(0)}B`; // 十亿
                   return `${value}M`;
                 }
-                return value + indicatorData.unit;
+                return value;
               },
             },
           },
@@ -180,13 +178,19 @@ document.addEventListener("DOMContentLoaded", () => {
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: "rgba(29, 36, 58, 0.95)",
-            titleColor: "#00f5d4",
-            bodyColor: "#e0e5f3",
-            borderColor: lineColor,
-            borderWidth: 1,
-            padding: 10,
-            displayColors: false,
+            // [修改] 适配波普风格
+            backgroundColor: "rgba(255, 255, 255, 0.9)", // 白底，90%不透明
+            titleColor: "#000000", // 黑标题
+            bodyColor: "#000000",  // 黑正文
+            borderColor: "#000000", // 黑边框
+            borderWidth: 3,        // 粗边框
+            cornerRadius: 0,       // 直角
+            padding: 15,
+            boxPadding: 4,
+            displayColors: true,   // 显示颜色块
+            titleFont: { family: "Poppins", weight: "900", size: 14 }, // 极粗
+            bodyFont: { family: "Poppins", weight: "600", size: 12 },  // 加粗
+
             callbacks: {
               label: function (context) {
                 const value = context.parsed.y;
@@ -195,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
                   // 在Tooltip中显示更精确的万亿数值
                   formattedValue = `${(value / 1000000).toFixed(3)} 万亿`;
                 }
-                return `${context.dataset.label}: ${formattedValue}${
+                return `${context.dataset.label}: ${formattedValue} ${
                   indicatorData.unit === "%" ? "%" : ""
                 }`;
               },

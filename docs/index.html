@@ -3,50 +3,54 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>投资组合仪表盘 | Cyber Monitor</title>
-    <!-- 引入 Poppins 字体 -->
+    <title>投资组合仪表盘 | POP MONITOR</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800;900&display=swap"
       rel="stylesheet"
     />
-    <!-- 引入 Font Awesome 图标库 -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
-    <!-- 引入 Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
-    <!-- 引入 Chart.js 日期适配器 -->
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- 背景装饰元素 -->
-    <div class="bg-orb orb-1"></div>
-    <div class="bg-orb orb-2"></div>
+    <div class="pop-bg-pattern"></div>
+    <div class="pop-decor-shape shape-circle"></div>
+    <div class="pop-decor-shape shape-triangle"></div>
+    <div class="pop-decor-shape shape-cross">✖</div>
+    <div class="pop-decor-shape shape-squiggle">
+        <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+            <path d="M0,10 Q25,20 50,10 T100,10" fill="none" stroke="currentColor" stroke-width="5"/>
+        </svg>
+    </div>
 
     <div class="main-container">
-      <!-- Tab 导航 -->
       <nav class="tab-nav">
-        <div class="nav-brand"><i class="fas fa-bolt"></i> MONITOR</div>
+        <div class="nav-brand">
+            <span class="brand-box">BOOM!</span> MONITOR
+        </div>
         <div class="nav-items">
           <button id="tab-summary" class="tab-button active">
-            <i class="fas fa-chart-pie"></i> 资产概览
+            资产概览
           </button>
           <button id="tab-positions" class="tab-button">
-            <i class="fas fa-edit"></i> 仓位更新
+            仓位更新
           </button>
           <button id="tab-settings" class="tab-button">
-            <i class="fas fa-cog"></i> 系统设置
+            系统设置
           </button>
         </div>
       </nav>
 
-      <!-- 内容面板 -->
       <main class="content-area">
-        <!-- TradingView Ticker Tape -->
         <div class="tradingview-ticker-wrapper">
           <div class="tradingview-widget-container">
             <div class="tradingview-widget-container__widget"></div>
@@ -64,7 +68,7 @@
                   { "proName": "INDEX:S5TH", "title": "S&P 200 AVG+" },
                   { "proName": "INDEX:S5FI", "title": "S&P 50 AVG+" }
                 ],
-                "colorTheme": "dark",
+                "colorTheme": "light",
                 "isTransparent": true,
                 "displayMode": "regular",
                 "locale": "zh_CN"
@@ -73,11 +77,9 @@
           </div>
         </div>
 
-        <!-- 资产概览面板 -->
         <div id="summary-panel" class="tab-panel active">
           <div id="summary-container">
-            <!-- 总资产展示 -->
-            <div class="total-value-card">
+            <div class="total-value-card pop-border" data-tilt data-tilt-max="2" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2">
               <div class="total-value-wrapper">
                 <span class="label-text">NET LIQUIDATION VALUE</span>
                 <div class="value-row">
@@ -91,28 +93,34 @@
               </div>
             </div>
 
-            <!-- 收益率展示 -->
             <div id="returns-display" class="returns-grid">
-              <!-- 动态加载 -->
-            </div>
+              </div>
 
-            <!-- 核心图表区 -->
             <div class="charts-grid">
-              <!-- 堆叠图 -->
-              <div class="chart-card value-chart-container">
+              <div class="chart-card value-chart-container pop-card color-accent-1" data-tilt data-tilt-max="1" data-tilt-scale="1.01">
                 <div class="card-header">
-                    <h3><i class="fas fa-layer-group"></i> 资产历史堆叠</h3>
+                    <h3>资产历史堆叠</h3>
                     <div class="live-badge">LIVE</div>
                 </div>
                 <div class="chart-body">
                     <canvas id="portfolio-value-chart"></canvas>
+
+                    <button id="chart-settings-btn" class="chart-settings-gear">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <div id="chart-settings-panel" class="chart-settings-panel">
+                         <div class="setting-row">
+                            <input type="checkbox" id="simple-tooltip-toggle" />
+                            <label for="simple-tooltip-toggle">简化提示框</label>
+                         </div>
+                         <div class="setting-note">仅显示日期和总价值</div>
+                    </div>
                 </div>
               </div>
 
-              <!-- 饼图 -->
-              <div class="chart-card pie-chart-container">
+              <div class="chart-card pie-chart-container pop-card color-accent-2" data-tilt data-tilt-max="1" data-tilt-scale="1.01">
                 <div class="card-header">
-                    <h3><i class="fas fa-chart-donut"></i> 资产分布</h3>
+                    <h3>资产分布</h3>
                 </div>
                 <div class="chart-body">
                     <canvas id="portfolio-pie-chart"></canvas>
@@ -121,34 +129,10 @@
             </div>
           </div>
 
-          <!-- 财经日历 (代码保留，不显示) -->
-          <!--
-          <div class="chart-card economic-calendar-container" style="margin-top: 30px;">
-            <h3 class="chart-title">重要财经日历</h3>
-            <div style="height: 500px">
-              <div class="tradingview-widget-container">
-                <div class="tradingview-widget-container__widget"></div>
-                <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-events.js" async>
-                {
-                    "colorTheme": "dark",
-                    "isTransparent": true,
-                    "locale": "zh_TW",
-                    "countryFilter": "us",
-                    "importanceFilter": "0,1",
-                    "width": "100%",
-                    "height": "100%"
-                }
-                </script>
-              </div>
-            </div>
-          </div>
-          -->
-
-          <!-- 恐慌贪婪指数 -->
           <div class="fear-greed-wrapper-container">
-            <div class="chart-card fear-greed-card">
+            <div class="chart-card fear-greed-card pop-card color-accent-3" data-tilt data-tilt-max="1">
               <div class="fear-greed-header">
-                <h3><i class="fas fa-biohazard"></i> CNN 恐慌与贪婪指数</h3>
+                <h3>CNN 恐慌与贪婪指数</h3>
                 <p id="fg-last-updated">Updating...</p>
               </div>
               <div class="fear-greed-content">
@@ -184,11 +168,10 @@
             </div>
           </div>
 
-          <!-- 市场深度指标 -->
           <div class="vix-section">
-             <div class="chart-card">
+             <div class="chart-card pop-card color-accent-1" data-tilt data-tilt-max="1">
                 <div class="card-header">
-                    <h3><i class="fas fa-wave-square"></i> 市场波动率 (VIX)</h3>
+                    <h3>市场波动率 (VIX)</h3>
                     <div id="vix-rating-badge" class="status-badge">--</div>
                 </div>
                 <div class="chart-body wide-chart">
@@ -198,18 +181,18 @@
           </div>
 
           <div class="market-breadth-grid">
-            <div class="chart-card">
+            <div class="chart-card pop-card" data-tilt data-tilt-max="2">
               <div class="card-header">
-                <h3><i class="fas fa-dumbbell"></i> 股价强度</h3>
+                <h3>股价强度</h3>
                 <div id="strength-rating-badge" class="status-badge">--</div>
               </div>
               <div class="chart-body">
                 <canvas id="stock-strength-chart"></canvas>
               </div>
             </div>
-            <div class="chart-card">
+            <div class="chart-card pop-card" data-tilt data-tilt-max="2">
               <div class="card-header">
-                <h3><i class="fas fa-arrows-alt-h"></i> 股价宽度</h3>
+                <h3>股价宽度</h3>
                 <div id="breadth-rating-badge" class="status-badge">--</div>
               </div>
               <div class="chart-body">
@@ -218,10 +201,11 @@
             </div>
           </div>
 
-          <!-- 宏观经济指标 -->
-          <div class="macro-section-title">MACRO ECONOMICS</div>
+          <div class="macro-section-title">
+              <span class="glitch-text" data-text="MACRO ECONOMICS">MACRO ECONOMICS</span>
+          </div>
 
-          <div class="chart-card fed-balance-card">
+          <div class="chart-card fed-balance-card pop-card color-accent-2" data-tilt data-tilt-max="1">
              <div class="card-header">
                 <h3>美联储总资产 (Fed Balance Sheet)</h3>
              </div>
@@ -231,19 +215,19 @@
           </div>
 
           <div class="fed-grid">
-            <div class="chart-card">
+            <div class="chart-card pop-card" data-tilt>
               <h3>核心 CPI (YoY)</h3>
               <div class="mini-chart-body"><canvas id="core-cpi-chart"></canvas></div>
             </div>
-            <div class="chart-card">
+            <div class="chart-card pop-card" data-tilt>
               <h3>核心 PCE (YoY)</h3>
               <div class="mini-chart-body"><canvas id="core-pce-chart"></canvas></div>
             </div>
-            <div class="chart-card">
+            <div class="chart-card pop-card" data-tilt>
               <h3>失业率</h3>
               <div class="mini-chart-body"><canvas id="unemployment-rate-chart"></canvas></div>
             </div>
-            <div class="chart-card">
+            <div class="chart-card pop-card" data-tilt>
               <h3>消费者信心指数</h3>
               <div class="mini-chart-body"><canvas id="consumer-sentiment-chart"></canvas></div>
             </div>
@@ -259,7 +243,6 @@
           </div>
         </div>
 
-        <!-- 仓位更新面板 -->
         <div id="positions-panel" class="tab-panel">
           <div class="panel-header">
              <h2>仓位管理</h2>
@@ -277,7 +260,6 @@
           </div>
         </div>
 
-        <!-- 其他设置面板 -->
         <div id="settings-panel" class="tab-panel">
           <div class="panel-header">
             <h2>系统配置</h2>
@@ -296,7 +278,6 @@
       </main>
     </div>
 
-    <!-- Token 弹窗 -->
     <div id="modal-backdrop" class="hidden"></div>
     <div id="token-modal" class="glass-modal hidden">
       <div class="modal-icon"><i class="fas fa-fingerprint"></i></div>
@@ -312,12 +293,11 @@
       </div>
     </div>
 
-    <!-- 历史数据表格弹窗 -->
     <div id="history-modal-backdrop" class="modal-backdrop-new hidden"></div>
     <div id="history-modal-container" class="glass-modal large hidden">
       <div class="modal-header">
-          <h3>历史数据归档</h3>
-          <span class="close-modal-hint">点击背景关闭</span>
+          <h3></h3>
+          <span class="close-modal-hint"></span>
       </div>
       <div id="history-table-content"></div>
     </div>
@@ -325,5 +305,38 @@
     <script src="script.js"></script>
     <script src="fed_data.js"></script>
     <script src="fear-greed-chart.js"></script>
+
+    <script>
+        // 初始化 VanillaTilt
+        // 这里使用 MutationObserver 监听 DOM 变化，因为部分元素（如 return-grid）是 JS 动态加载的
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === 1 && node.classList && node.classList.contains('return-item')) {
+                        // 给动态添加的收益率小卡片增加 tilt 效果
+                        VanillaTilt.init(node, {
+                            max: 5,
+                            speed: 400,
+                            glare: true,
+                            "max-glare": 0.3,
+                            scale: 1.05
+                        });
+                    }
+                });
+            });
+        });
+
+        const returnsContainer = document.getElementById('returns-display');
+        if (returnsContainer) {
+            observer.observe(returnsContainer, { childList: true });
+        }
+
+        // 给所有已经存在的带有 data-tilt 属性的元素初始化
+        VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+             speed: 400,
+             glare: true,
+             "max-glare": 0.1
+        });
+    </script>
   </body>
 </html>

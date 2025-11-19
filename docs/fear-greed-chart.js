@@ -17,9 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
         'extreme greed': '#2ecc71'
     };
 
-    const CHART_GRID_COLOR = 'rgba(138, 153, 192, 0.15)';
-    const CHART_TICK_COLOR = '#8a99c0';
-    const CHART_FONT = { family: 'Poppins', size: 12 };
+    // [修改] 图表基础样式适配白底波普风格
+    const CHART_GRID_COLOR = 'rgba(0, 0, 0, 0.05)'; // 极淡的黑色网格
+    const CHART_TICK_COLOR = '#000000';             // 纯黑刻度文字
+    const CHART_FONT = { family: 'Poppins', size: 12, weight: '600' }; // 加粗字体
 
     let fearGreedHistoryChart = null;
     let fearGreedGauge = null;
@@ -51,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Could not load Fear & Greed data:", error);
             const container = document.querySelector('.fear-greed-wrapper-container');
             if (container) {
-                container.innerHTML = '<p style="color: var(--negative-color); text-align: center; padding: 20px;">恐慌贪婪指数加载失败。</p>';
+                container.innerHTML = '<p style="color: #d50000; text-align: center; padding: 20px; font-weight: bold;">恐慌贪婪指数加载失败。</p>';
             }
         }
     }
@@ -65,9 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const ratingSpan = document.getElementById('fg-score-rating');
         const ratingText = summaryData.rating;
         ratingSpan.textContent = ratingText.charAt(0).toUpperCase() + ratingText.slice(1);
-        const ratingColor = RATING_COLORS[ratingText.toLowerCase()] || '#fff';
+
+        // 保持评级本身的颜色，但在白底上可能需要深一点的阴影或描边，这里暂时保持原逻辑
+        const ratingColor = RATING_COLORS[ratingText.toLowerCase()] || '#000';
         ratingSpan.style.color = ratingColor;
-        document.getElementById('fg-score-value').style.textShadow = `0 0 15px ${ratingColor}60`;
+        // 移除阴影以保持波普的扁平感，或者改用硬阴影
+        document.getElementById('fg-score-value').style.textShadow = 'none';
     }
 
     /**
@@ -110,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 datasets: [{
                     data: [score, 100 - score],
-                    backgroundColor: [gradient, 'rgba(38, 48, 77, 0.8)'],
+                    backgroundColor: [gradient, 'rgba(0, 0, 0, 0.1)'], // 未填充部分改为浅黑
                     borderColor: 'transparent',
                     borderWidth: 0,
                     borderRadius: { outerStart: 8, outerEnd: 8, innerStart: 8, innerEnd: 8 },
@@ -151,15 +155,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     pointRadius: 0,
                     pointHoverRadius: 6,
                     pointHoverBorderWidth: 2,
+                    pointHoverBorderColor: '#000000', // 悬浮点黑边
                     pointHoverBackgroundColor: '#fff',
                     fill: true,
                     segment: {
-                        borderColor: ctx => RATING_COLORS[ctx.p1.raw.rating] || '#fff',
+                        borderColor: ctx => RATING_COLORS[ctx.p1.raw.rating] || '#000',
                         backgroundColor: ctx => {
                             const chartArea = ctx.chart.chartArea;
                             if (!chartArea) return null;
                             const gradient = ctx.chart.ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                            const color = RATING_COLORS[ctx.p1.raw.rating] || '#ffffff';
+                            const color = RATING_COLORS[ctx.p1.raw.rating] || '#000000';
                             gradient.addColorStop(0, `${color}80`);
                             gradient.addColorStop(1, `${color}05`);
                             return gradient;
@@ -188,13 +193,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: 'rgba(29, 36, 58, 0.95)',
-                        titleColor: '#00f5d4',
-                        bodyColor: '#e0e5f3',
-                        borderColor: '#00f5d4',
-                        borderWidth: 1,
-                        padding: 10,
-                        displayColors: false,
+                        // [修改] Tooltip 波普风格
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#000000',
+                        bodyColor: '#000000',
+                        borderColor: '#000000',
+                        borderWidth: 3,
+                        cornerRadius: 0,
+                        padding: 15,
+                        boxPadding: 4,
+                        displayColors: true,
+                        titleFont: { family: 'Poppins', weight: '900', size: 14 },
+                        bodyFont: { family: 'Poppins', weight: '600', size: 12 },
                         callbacks: {
                             label: function(context) {
                                 const rating = context.raw.rating;
@@ -223,10 +233,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentRating = strengthData.rating.toLowerCase();
         const badge = document.getElementById('strength-rating-badge');
         if (badge) {
-            const color = RATING_COLORS[currentRating] || '#fff';
+            const color = RATING_COLORS[currentRating] || '#000';
             badge.textContent = strengthData.rating;
-            badge.style.borderColor = color;
-            badge.style.color = color;
+            badge.style.borderColor = '#000'; // 强制黑边
+            badge.style.backgroundColor = color;
+            badge.style.color = '#fff'; // 白字
+            badge.style.boxShadow = '2px 2px 0 #000'; // 硬阴影
         }
 
         stockStrengthChart = new Chart(ctx, {
@@ -240,15 +252,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     pointRadius: 0,
                     pointHoverRadius: 6,
                     pointHoverBorderWidth: 2,
+                    pointHoverBorderColor: '#000000',
                     pointHoverBackgroundColor: '#fff',
                     fill: true,
                     segment: {
-                        borderColor: ctx => RATING_COLORS[ctx.p1.raw.rating] || '#fff',
+                        borderColor: ctx => RATING_COLORS[ctx.p1.raw.rating] || '#000',
                         backgroundColor: ctx => {
                             const chartArea = ctx.chart.chartArea;
                             if (!chartArea) return null;
                             const gradient = ctx.chart.ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                            const color = RATING_COLORS[ctx.p1.raw.rating] || '#ffffff';
+                            const color = RATING_COLORS[ctx.p1.raw.rating] || '#000000';
                             gradient.addColorStop(0, `${color}80`);
                             gradient.addColorStop(1, `${color}05`);
                             return gradient;
@@ -275,13 +288,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: 'rgba(29, 36, 58, 0.95)',
-                        titleColor: '#00f5d4',
-                        bodyColor: '#e0e5f3',
-                        borderColor: '#00f5d4',
-                        borderWidth: 1,
-                        padding: 10,
-                        displayColors: false,
+                        // [修改] Tooltip 波普风格
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#000000',
+                        bodyColor: '#000000',
+                        borderColor: '#000000',
+                        borderWidth: 3,
+                        cornerRadius: 0,
+                        padding: 15,
+                        boxPadding: 4,
+                        displayColors: true,
+                        titleFont: { family: 'Poppins', weight: '900', size: 14 },
+                        bodyFont: { family: 'Poppins', weight: '600', size: 12 },
                         callbacks: {
                             label: function(context) {
                                 return `强度: ${context.parsed.y.toFixed(2)}`;
@@ -307,10 +325,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentRating = breadthData.rating.toLowerCase();
         const badge = document.getElementById('breadth-rating-badge');
         if (badge) {
-            const color = RATING_COLORS[currentRating] || '#fff';
+            const color = RATING_COLORS[currentRating] || '#000';
             badge.textContent = breadthData.rating;
-            badge.style.borderColor = color;
-            badge.style.color = color;
+            badge.style.borderColor = '#000';
+            badge.style.backgroundColor = color;
+            badge.style.color = '#fff';
+            badge.style.boxShadow = '2px 2px 0 #000';
         }
 
         stockBreadthChart = new Chart(ctx, {
@@ -324,15 +344,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     pointRadius: 0,
                     pointHoverRadius: 6,
                     pointHoverBorderWidth: 2,
+                    pointHoverBorderColor: '#000000',
                     pointHoverBackgroundColor: '#fff',
                     fill: true,
                     segment: {
-                        borderColor: ctx => RATING_COLORS[ctx.p1.raw.rating] || '#fff',
+                        borderColor: ctx => RATING_COLORS[ctx.p1.raw.rating] || '#000',
                         backgroundColor: ctx => {
                             const chartArea = ctx.chart.chartArea;
                             if (!chartArea) return null;
                             const gradient = ctx.chart.ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                            const color = RATING_COLORS[ctx.p1.raw.rating] || '#ffffff';
+                            const color = RATING_COLORS[ctx.p1.raw.rating] || '#000000';
                             gradient.addColorStop(0, `${color}80`);
                             gradient.addColorStop(1, `${color}05`);
                             return gradient;
@@ -359,13 +380,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: 'rgba(29, 36, 58, 0.95)',
-                        titleColor: '#00f5d4',
-                        bodyColor: '#e0e5f3',
-                        borderColor: '#00f5d4',
-                        borderWidth: 1,
-                        padding: 10,
-                        displayColors: false,
+                        // [修改] Tooltip 波普风格
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#000000',
+                        bodyColor: '#000000',
+                        borderColor: '#000000',
+                        borderWidth: 3,
+                        cornerRadius: 0,
+                        padding: 15,
+                        boxPadding: 4,
+                        displayColors: true,
+                        titleFont: { family: 'Poppins', weight: '900', size: 14 },
+                        bodyFont: { family: 'Poppins', weight: '600', size: 12 },
                         callbacks: {
                             label: function(context) {
                                 return `宽度: ${context.parsed.y.toFixed(2)}`;
@@ -392,10 +418,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentRating = vixData.rating.toLowerCase();
         const badge = document.getElementById('vix-rating-badge');
         if (badge) {
-            const color = RATING_COLORS[currentRating] || '#fff';
+            const color = RATING_COLORS[currentRating] || '#000';
             badge.textContent = vixData.rating;
-            badge.style.borderColor = color;
-            badge.style.color = color;
+            badge.style.borderColor = '#000';
+            badge.style.backgroundColor = color;
+            badge.style.color = '#fff';
+            badge.style.boxShadow = '2px 2px 0 #000';
         }
 
         vixChart = new Chart(ctx, {
@@ -409,15 +437,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     pointRadius: 0,
                     pointHoverRadius: 6,
                     pointHoverBorderWidth: 2,
+                    pointHoverBorderColor: '#000000',
                     pointHoverBackgroundColor: '#fff',
                     fill: true,
                     segment: {
-                        borderColor: ctx => RATING_COLORS[ctx.p1.raw.rating] || '#fff',
+                        borderColor: ctx => RATING_COLORS[ctx.p1.raw.rating] || '#000',
                         backgroundColor: ctx => {
                             const chartArea = ctx.chart.chartArea;
                             if (!chartArea) return null;
                             const gradient = ctx.chart.ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
-                            const color = RATING_COLORS[ctx.p1.raw.rating] || '#ffffff';
+                            const color = RATING_COLORS[ctx.p1.raw.rating] || '#000000';
                             gradient.addColorStop(0, `${color}80`);
                             gradient.addColorStop(1, `${color}05`);
                             return gradient;
@@ -426,7 +455,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, {
                     label: '50日移动均线',
                     data: vix50DataPoints,
-                    borderColor: 'rgba(138, 153, 192, 0.9)',
+                    borderColor: 'rgba(0, 0, 0, 0.5)', // [修改] 均线改为半透明黑色
                     borderWidth: 2,
                     borderDash: [5, 5],
                     pointRadius: 0,
@@ -456,20 +485,25 @@ document.addEventListener('DOMContentLoaded', () => {
                         position: 'top',
                         align: 'end',
                         labels: {
-                            color: CHART_TICK_COLOR,
+                            color: CHART_TICK_COLOR, // [修改] Legend 黑色
                             font: CHART_FONT,
                             boxWidth: 15,
                             padding: 15
                         }
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(29, 36, 58, 0.95)',
-                        titleColor: '#00f5d4',
-                        bodyColor: '#e0e5f3',
-                        borderColor: '#00f5d4',
-                        borderWidth: 1,
-                        padding: 10,
+                        // [修改] Tooltip 波普风格
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#000000',
+                        bodyColor: '#000000',
+                        borderColor: '#000000',
+                        borderWidth: 3,
+                        cornerRadius: 0,
+                        padding: 15,
+                        boxPadding: 4,
                         displayColors: true,
+                        titleFont: { family: 'Poppins', weight: '900', size: 14 },
+                        bodyFont: { family: 'Poppins', weight: '600', size: 12 }
                     }
                 }
             }
