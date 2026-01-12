@@ -1,5 +1,5 @@
 {
-  "analysis_date": "2026-01-12T21:33:56.374097",
+  "analysis_date": "2026-01-12T22:18:03.484474",
   "portfolio_returns": {
     "ADBE": {
       "current_price": 327.65,
@@ -71,8 +71,8 @@
       "total_value": 5113.0,
       "asset_type": "option",
       "returns": {
-        "previous_trading_day": -1.29,
-        "week_to_date": -1.29,
+        "previous_trading_day": -0.0,
+        "week_to_date": -0.0,
         "month_to_date": -5.58,
         "year_to_date": -5.58,
         "past_30_trading_days": 6.14,
@@ -86,8 +86,8 @@
       "returns": {
         "previous_trading_day": -0.0,
         "week_to_date": -0.0,
-        "month_to_date": -3.3,
-        "year_to_date": -3.3,
+        "month_to_date": -1.41,
+        "year_to_date": -1.41,
         "past_30_trading_days": 6.92,
         "past_250_trading_days": null
       }
