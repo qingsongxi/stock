@@ -1,5 +1,5 @@
 {
-  "analysis_date": "2026-01-16T22:20:06.242993",
+  "analysis_date": "2026-01-19T22:20:35.012581",
   "portfolio_returns": {
     "ADBE": {
       "current_price": 296.12,
@@ -15,16 +15,16 @@
       }
     },
     "ASML": {
-      "current_price": 1358.57,
-      "total_value": 127255.08,
+      "current_price": 1358.77,
+      "total_value": 127273.44,
       "asset_type": "stock",
       "returns": {
-        "previous_trading_day": 2.03,
-        "week_to_date": 6.65,
-        "month_to_date": 26.99,
-        "year_to_date": 26.99,
-        "past_30_trading_days": 22.53,
-        "past_250_trading_days": 82.81
+        "previous_trading_day": 2.04,
+        "week_to_date": 6.66,
+        "month_to_date": 27.0,
+        "year_to_date": 27.0,
+        "past_30_trading_days": 22.55,
+        "past_250_trading_days": 82.83
       }
     },
     "BRK.B": {
@@ -72,7 +72,7 @@
       "asset_type": "option",
       "returns": {
         "previous_trading_day": -1.14,
-        "week_to_date": 1.7,
+        "week_to_date": 0.39,
         "month_to_date": -3.97,
         "year_to_date": -3.97,
         "past_30_trading_days": 0.78,
@@ -86,8 +86,8 @@
       "returns": {
         "previous_trading_day": 1.27,
         "week_to_date": 2.13,
-        "month_to_date": 0.68,
-        "year_to_date": 0.68,
+        "month_to_date": -1.24,
+        "year_to_date": -1.24,
         "past_30_trading_days": 4.55,
         "past_250_trading_days": null
       }
