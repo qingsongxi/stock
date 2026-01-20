@@ -2,14 +2,14 @@
   "fear_and_greed": {
     "score": 62.1714285714286,
     "rating": "greed",
-    "timestamp": "2026-01-16T23:59:49+00:00",
-    "previous_close": 61.5142857142857,
-    "previous_1_week": 53.5428571428571,
-    "previous_1_month": 45.4857142857143,
-    "previous_1_year": 27.342857142857145
+    "timestamp": "2026-01-20T13:07:31+00:00",
+    "previous_close": 62.1714285714286,
+    "previous_1_week": 59.5142857142857,
+    "previous_1_month": 49.6857142857143,
+    "previous_1_year": 36.02857142857143
   },
   "fear_and_greed_historical": {
-    "timestamp": 1768607989000.0,
+    "timestamp": 1768914451000.0,
     "score": 62.1714285714286,
     "rating": "greed",
     "data": [
@@ -1274,7 +1274,12 @@
         "rating": "greed"
       },
       {
-        "x": 1768607989000.0,
+        "x": 1768867200000.0,
+        "y": 62.1714285714286,
+        "rating": "greed"
+      },
+      {
+        "x": 1768914451000.0,
         "y": 62.1714285714286,
         "rating": "greed"
       }
@@ -7606,7 +7611,7 @@
     ]
   },
   "market_volatility_vix": {
-    "timestamp": 1768598101000.0,
+    "timestamp": 1768914451000.0,
     "score": 50,
     "rating": "neutral",
     "data": [
@@ -8861,14 +8866,19 @@
         "rating": "extreme fear"
       },
       {
-        "x": 1768598101000.0,
-        "y": 15.86,
+        "x": 1768867200000.0,
+        "y": 19.73,
+        "rating": "extreme fear"
+      },
+      {
+        "x": 1768914451000.0,
+        "y": 19.73,
         "rating": "extreme fear"
       }
     ]
   },
   "market_volatility_vix_50": {
-    "timestamp": 1768598101000.0,
+    "timestamp": 1768914451000.0,
     "score": 50,
     "rating": "neutral",
     "data": [
@@ -10123,8 +10133,13 @@
         "rating": "extreme fear"
       },
       {
-        "x": 1768598101000.0,
-        "y": 17.062,
+        "x": 1768867200000.0,
+        "y": 17.0964,
+        "rating": "extreme fear"
+      },
+      {
+        "x": 1768914451000.0,
+        "y": 17.0964,
         "rating": "extreme fear"
       }
     ]
