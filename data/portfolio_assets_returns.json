@@ -1,5 +1,5 @@
 {
-  "analysis_date": "2026-01-22T21:20:52.684128",
+  "analysis_date": "2026-01-22T22:21:36.278730",
   "portfolio_returns": {
     "ADBE": {
       "current_price": 299.73,
@@ -106,14 +106,14 @@
       }
     },
     "VOO": {
-      "current_price": 633.55,
-      "total_value": 74138.02,
+      "current_price": 633.57,
+      "total_value": 74140.36,
       "asset_type": "stock",
       "returns": {
         "previous_trading_day": 0.52,
         "week_to_date": -0.4,
-        "month_to_date": 1.02,
-        "year_to_date": 1.02,
+        "month_to_date": 1.03,
+        "year_to_date": 1.03,
         "past_30_trading_days": 1.07,
         "past_250_trading_days": 15.02
       }
