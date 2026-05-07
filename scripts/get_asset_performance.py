@@ -266,9 +266,10 @@ class PortfolioAnalyzer:
                 print(f"    -> 未找到行权价为 {option_info['strike']} 的合约")
                 return None
 
-            price = contract.iloc[0]['lastPrice']
-            volume = contract.iloc[0]['volume']
-            open_interest = contract.iloc[0]['openInterest']
+            contract_row = contract.iloc[0]
+            price = self._extract_option_price(contract_row)
+            volume = contract_row['volume']
+            open_interest = contract_row['openInterest']
 
             print(f"    -> 成功获取: ${price:.2f}, 成交量: {volume}, 未平仓: {open_interest}")
 
@@ -281,6 +282,28 @@ class PortfolioAnalyzer:
 
         except Exception as e:
             print(f"    -> 获取期权当前价格失败: {e}")
+            return None
+
+    def _extract_option_price(self, contract_row):
+        """优先使用买卖盘中间价，无有效买卖盘时回退到成交价或前收价。"""
+        bid = self._to_float(contract_row.get('bid'))
+        ask = self._to_float(contract_row.get('ask'))
+        if bid is not None and ask is not None and not (bid == 0 and ask == 0):
+            return (bid + ask) / 2
+
+        for key in ('lastPrice', 'previousClose'):
+            value = self._to_float(contract_row.get(key))
+            if value not in (None, 0):
+                return value
+
+        raise ValueError("未找到有效期权价格")
+
+    def _to_float(self, value):
+        try:
+            if value is None or pd.isna(value):
+                return None
+            return float(value)
+        except (TypeError, ValueError):
             return None
 
     def get_option_historical_price(self, symbol, target_date):
