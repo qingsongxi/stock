@@ -273,8 +273,7 @@ def get_option_price_yfinance(ticker, expiry, strike_price, option_type):
         if contract.empty:
             raise ValueError(f"未找到行权价为 {strike_price} 的合约")
 
-        contract_row = contract.iloc[0]
-        price = _extract_option_price_from_contract(contract_row)
+        price = float(contract.iloc[0]['lastPrice'])
         # 期权价格使用当前美东日期
         trading_day = get_et_date_string()
 
@@ -283,30 +282,6 @@ def get_option_price_yfinance(ticker, expiry, strike_price, option_type):
 
     except Exception as e:
         print(f"  - [yfinance-option] 失败: {e}")
-        return None
-
-
-def _extract_option_price_from_contract(contract_row):
-    """优先使用买卖盘中间价，无有效买卖盘时回退到成交价或前收价。"""
-    bid = _to_float(contract_row.get('bid'))
-    ask = _to_float(contract_row.get('ask'))
-    if bid is not None and ask is not None and not (bid == 0 and ask == 0):
-        return (bid + ask) / 2
-
-    for key in ('lastPrice', 'previousClose'):
-        value = _to_float(contract_row.get(key))
-        if value not in (None, 0):
-            return value
-
-    raise ValueError("未找到有效期权价格")
-
-
-def _to_float(value):
-    try:
-        if value is None or pd.isna(value):
-            return None
-        return float(value)
-    except (TypeError, ValueError):
         return None
 
 
